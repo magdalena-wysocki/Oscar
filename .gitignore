@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+
+# Environments
+.venv/
+venv/
+env/
+
+# Experiment outputs (do not commit) — but keep data/README.md (dataset doc)
+data/*
+!data/README.md
+checkpoints/
+logs*/
+summaries/
+
+# Data / model / mesh artifacts (do not commit patient data or weights)
+*.tar
+*.pt
+*.npy
+*.npz
+*.obj
+*.ply
+*.stl
+*.nii
+*.nii.gz
+*.csv
+*.png
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+
+# Webpage for GitHub Pages — keep docs/ figures despite the *.png rule above
+!docs/assets/figures/*.png

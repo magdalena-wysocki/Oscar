@@ -1,0 +1,2 @@
+Point cloud min: [-48.0, -55.0, -32.5]
+Point cloud max: [48.0, 55.0, 32.5]

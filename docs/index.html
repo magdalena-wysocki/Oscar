@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OSCAR: Occupancy-based Shape Completion via Acoustic Neural Implicit Representations</title>
+<style>
+  :root{
+    --accent:#1d4ed8; --accent2:#16a34a; --ink:#0f172a; --muted:#64748b; --line:#e2e8f0; --bg:#ffffff;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+       color:var(--ink);background:var(--bg);line-height:1.6}
+  .wrap{max-width:980px;margin:0 auto;padding:0 22px}
+  header{padding:54px 0 26px;text-align:center;border-bottom:1px solid var(--line)}
+  h1{font-size:30px;line-height:1.25;margin:0 0 6px}
+  h1 .sub{display:block;font-size:18px;color:var(--muted);font-weight:600;margin-top:8px}
+  .venue{display:inline-block;margin:14px 0 4px;padding:4px 12px;border-radius:999px;
+         background:#eff6ff;color:var(--accent);font-weight:700;font-size:13px}
+  .authors{margin:14px 0 4px;font-size:17px}
+  .authors a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line)}
+  .aff{color:var(--muted);font-size:14px;margin:4px 0 0}
+  .eq{color:var(--muted);font-size:13px;margin-top:6px}
+  .links{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:22px 0 4px}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:10px;
+       background:var(--ink);color:#fff;text-decoration:none;font-weight:600;font-size:14px}
+  .btn.alt{background:var(--accent)} .btn.vid{background:#b91c1c}
+  section{padding:34px 0;border-bottom:1px solid var(--line)}
+  h2{font-size:22px;margin:0 0 14px}
+  p{font-size:16.5px}
+  figure{margin:18px 0;text-align:center}
+  figure img{max-width:100%;border:1px solid var(--line);border-radius:10px}
+  figcaption{color:var(--muted);font-size:14px;margin-top:8px}
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:15px}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:center}
+  th{background:#f8fafc} td.m{text-align:left;font-weight:600}
+  tr.best td{background:#eff6ff} .win{color:var(--accent);font-weight:700}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .video-box{position:relative;background:#0b1220;border-radius:12px;padding:18px;color:#cbd5e1;text-align:center}
+  .video-embed{position:relative;width:100%;aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:#0b1220}
+  .video-embed iframe,.video-embed video{position:absolute;inset:0;width:100%;height:100%;border:0;object-fit:contain;background:#000}
+  .note{background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:12px 14px;color:#92400e;font-size:14px}
+  pre{background:#0b1220;color:#e2e8f0;padding:16px;border-radius:10px;overflow:auto;font-size:13px}
+  footer{padding:30px 0 60px;color:var(--muted);font-size:14px;text-align:center}
+  @media(max-width:720px){.grid2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="venue">MICCAI 2026</div>
+    <h1>OSCAR<span class="sub">Occupancy-based Shape Completion via Acoustic Neural Implicit Representations</span></h1>
+    <div class="authors">
+      <a href="#">Magdalena Wysocki</a><sup>1,2,&#42;</sup>,
+      <a href="#">Kadir Burak Buldu</a><sup>1,&#42;</sup>,
+      <a href="#">Miruna-Alexandra Gafencu</a><sup>1,2,3</sup>,
+      <a href="#">Benjamin D. Killeen</a><sup>1,2</sup>,
+      <a href="#">Mohammad Farid Azampour</a><sup>1,2</sup>,
+      <a href="#">Nassir Navab</a><sup>1,2</sup>
+    </div>
+    <div class="aff"><sup>1</sup> Computer Aided Medical Procedures (CAMP), Technical University of Munich &nbsp;·&nbsp;
+      <sup>2</sup> Munich Center for Machine Learning (MCML) &nbsp;·&nbsp;
+      <sup>3</sup> Konrad Zuse School of Excellence in Reliable AI (relAI), Germany</div>
+    <div class="eq">&#42; Equal contribution</div>
+    <div class="links">
+      <a class="btn alt" href="https://arxiv.org/abs/2603.08279">📄 Paper (arXiv)</a>
+      <a class="btn" href="https://github.com/magdalena-wysocki/Oscar">💻 Code</a>
+      <a class="btn vid" href="#comparison">▶ Reconstruction comparison</a>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <section>
+    <figure>
+      <img src="assets/figures/teaser.gif" alt="Partial ultrasound observation completed into a full 3D shape by OSCAR">
+      <figcaption>Ultrasound images only the probe-facing surface of a bone; everything behind the first strong
+      reflector is shadowed. <b>OSCAR</b> completes the full 3D shape from that partial observation: the
+      probe-facing surface (left) is completed into the full shape (right, orange), matching the ground-truth
+      geometry (grey).</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <figure>
+      <img src="assets/figures/oscar_main.001.png" alt="OSCAR method overview">
+      <figcaption>Query points <b>x</b> and a per-subject latent <b>z</b> (initialized from the learned latent space)
+      feed a <b>shared backbone</b> <i>f<sub>&theta;</sub></i>; its features drive an <b>acoustic head</b>
+      (→ acoustic features → differentiable B-mode synthesis) and a <b>geometric head</b> (→ occupancy). Training
+      optimizes both (<i>L<sub>opt</sub></i>); at test time the network is frozen and only the latent is optimized
+      from B-mode alone (<i>L<sub>tto</sub></i>) — no shape labels.</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2>Abstract</h2>
+    <p>Accurate 3D reconstruction of vertebral anatomy from ultrasound is important for guiding minimally invasive
+    spine interventions, but it remains challenging due to acoustic shadowing and view-dependent signal variations.
+    We propose an occupancy-based shape-completion method that reconstructs complete 3D anatomical geometry from
+    partial ultrasound observations. Crucially for intra-operative applications, our approach extracts the anatomical
+    surface directly from the image, <b>avoiding the need for anatomical labels during inference</b>. This label-free
+    completion relies on a <b>coupled latent space</b> representing both image appearance and underlying anatomical
+    shape. By leveraging a Neural Implicit Representation that jointly models spatial occupancy and acoustic
+    interactions, the method becomes implicitly aware of unseen regions without explicit shadowing labels, through
+    tracking acoustic signal transmission. We show that this method outperforms state-of-the-art shape completion for
+    B-mode ultrasound by <b>80% in HD95</b>, validated both <i>in silico</i> and on phantom ultrasound with
+    registered CT ground truth.</p>
+  </section>
+
+  <section id="comparison">
+    <h2>Reconstruction comparison</h2>
+    <div class="video-embed">
+      <video autoplay muted loop playsinline controls preload="metadata">
+        <source src="assets/figures/comparison.mp4" type="video/mp4">
+      </video>
+    </div>
+  </section>
+
+  <section>
+    <h2>Method</h2>
+    <p>For a 3D point <b>x</b> and subject latent <b>z</b>, a shared backbone <i>f<sub>&theta;</sub></i> produces a
+    joint feature that two heads decode: an <span style="color:#d97706;font-weight:700">acoustic head</span> predicting
+    reflection / scatter / attenuation, and an <span style="color:var(--accent2);font-weight:700">occupancy head</span>
+    predicting <i>O(x|z)</i>. A differentiable ray-based renderer turns the acoustic field into a B-mode image; by
+    integrating signal transmission along each scanline, the model becomes implicitly aware of shadowed (occluded)
+    anatomy. Forcing both heads to share the representation couples acoustics and geometry, so optimizing the latent
+    on the visible anatomy completes the occluded shape.</p>
+    <figure>
+      <img src="assets/figures/shared_vs_decoupled.png" alt="Shared backbone vs. two decoupled networks">
+      <figcaption>Coupling is essential: replacing the shared backbone with two separate networks (sharing only the
+      latent code) nearly doubles HD95 (1.54 → 3.21 mm) and lowers Dice (0.85 → 0.75), confirming the gain comes from a
+      coupled acoustic–geometric representation — not just a shared latent. 5-seed test-time sweep on the 10 test subjects.</figcaption>
+    </figure>
+    <figure>
+      <img src="assets/figures/tto_trajectory.png" alt="Test-time optimization trajectory">
+      <figcaption>Test-time latent optimization on an unseen subject: starting from the mean shape, Dice rises and
+      HD95 falls as the latent is optimized against the B-mode frames alone.</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2>Results</h2>
+    <p>OSCAR outperforms the SOTA B-mode shape-completion method <b>SITD</b><a href="#references"><sup>[1]</sup></a> and the backbone <b>NISF</b><a href="#references"><sup>[2]</sup></a>, with overall
+    HD95 improvements of <span class="win">80%</span> and <span class="win">61%</span> on simulation.</p>
+    <table>
+      <tr><th>Domain</th><th>Method</th><th>Label</th><th>HD95 (mm) ↓</th><th>Chamfer ↓</th><th>F1 ↑</th></tr>
+      <tr><td rowspan="3">Sim.</td><td class="m">SITD</td><td>✓</td><td>5.93 ± 0.94</td><td>119.87 ± 17.04</td><td>0.21 ± 0.04</td></tr>
+      <tr><td class="m">NISF</td><td>✗</td><td>3.03 ± 0.92</td><td>88.38 ± 14.43</td><td>0.33 ± 0.05</td></tr>
+      <tr class="best"><td class="m">OSCAR</td><td>✗</td><td class="win">1.17 ± 0.38</td><td class="win">56.57 ± 6.64</td><td class="win">0.54 ± 0.06</td></tr>
+      <tr><td rowspan="3">Phan.</td><td class="m">SITD</td><td>✓</td><td>7.17 ± 1.05</td><td>104.66 ± 20.50</td><td>0.23 ± 0.07</td></tr>
+      <tr><td class="m">NISF</td><td>✗</td><td>8.61 ± 2.85</td><td>146.98 ± 22.57</td><td>0.23 ± 0.01</td></tr>
+      <tr class="best"><td class="m">OSCAR</td><td>✗</td><td>7.46 ± 3.41</td><td>105.34 ± 20.99</td><td class="win">0.27 ± 0.05</td></tr>
+    </table>
+    <figcaption>Table 1 — 10 simulation + 3 phantom test subjects. OSCAR is label-free at inference; on phantoms it
+    matches SITD, which requires explicit point-cloud labels.</figcaption>
+    <figure>
+      <img src="assets/figures/results_sim.png" alt="Simulation results">
+      <figcaption>Simulation test set: OSCAR (blue) gives the lowest HD95 / Chamfer and the highest F1.</figcaption>
+    </figure>
+    <figure>
+      <img src="assets/figures/results_phantom.png" alt="Phantom results">
+      <figcaption>Phantom test set (3 unseen subjects in tissue-mimicking gelatin): trained only on simulation,
+      OSCAR transfers to real B-mode and leads on F1; the remaining HD95 / Chamfer gap reflects the sim-to-real
+      domain shift.</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2>Qualitative completion</h2>
+    <figure>
+      <img src="assets/figures/qualitative_pred_vs_gt.png" alt="Predicted vs GT vertebra">
+      <figcaption>OSCAR-completed vertebra (blue) vs. ground truth (green) on a held-out subject — the body,
+      transverse/spinous processes and vertebral foramen are all recovered.</figcaption>
+    </figure>
+    <figure>
+      <img src="assets/figures/oscar_results.001.png" alt="Qualitative comparison vs. baselines">
+      <figcaption>Completed vertebrae across methods (paper figure): Reference vs. SITD, NISF and OSCAR on held-out
+      subjects.</figcaption>
+    </figure>
+    <figure>
+      <img src="assets/figures/real_oscar.001.png" alt="Qualitative comparison, top and side views">
+      <figcaption>Reference vs. SITD, NISF and OSCAR (top and side views): NISF fragments the shape, while OSCAR
+      recovers a complete, anatomically faithful vertebra.</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2>Bidirectional shape &harr; acoustics</h2>
+    <p>Because the latent couples geometry and acoustics, the mapping runs both ways: optimizing the latent on a
+    target <b>shape alone</b> (occupancy, no image) recovers a plausible acoustic field — the synthesized B-mode
+    matches the real scan's structure.</p>
+    <figure>
+      <img src="assets/figures/bidirectional.png" alt="Bidirectional shape to acoustics">
+      <figcaption>Latent fit to occupancy only → recovered B-mode + acoustic maps for a frame (real B-mode for reference).</figcaption>
+    </figure>
+  </section>
+
+  <section>
+    <h2>Physics-aware acoustic rendering</h2>
+    <p>The acoustic head decomposes each frame into attenuation, reflection and scatter; integrating signal
+    transmission along each scanline yields the confidence map and makes the model implicitly aware of shadowed
+    (occluded) anatomy. The synthesized B-mode closely matches the real image.</p>
+    <figure>
+      <img src="assets/figures/acoustic_maps.png" alt="Acoustic decomposition">
+      <figcaption>Real vs. synthesized B-mode and the predicted acoustic / transmission maps for one frame.</figcaption>
+    </figure>
+  </section>
+
+  <section id="references">
+    <h2>References</h2>
+    <ol>
+      <li>Gafencu, M.-A., Velikova, Y., Saleh, M., Ungi, T., Navab, N., Wendler, T., Azampour, M. F.
+      <i>Shape Completion in the Dark: Completing Vertebrae Morphology from 3D Ultrasound.</i>
+      IJCARS, 2024. <a href="https://arxiv.org/abs/2404.07668">arXiv:2404.07668</a>.</li>
+      <li>Stolt-Ansó, N., McGinnis, J., Pan, J., Hammernik, K., Rueckert, D.
+      <i>NISF: Neural Implicit Segmentation Functions.</i> MICCAI 2023.
+      <a href="https://doi.org/10.1007/978-3-031-43901-8_70">doi:10.1007/978-3-031-43901-8_70</a>.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>Citation</h2>
+    <pre>@article{wysocki2026oscar,
+  title   = {Oscar: Occupancy-based shape completion via acoustic neural implicit representations},
+  author  = {Wysocki, Magdalena and Buldu, Kadir Burak and Gafencu, Miruna-Alexandra
+             and Killeen, Benjamin D. and Azampour, Mohammad Farid and Navab, Nassir},
+  journal = {arXiv preprint arXiv:2603.08279},
+  year    = {2026}
+}</pre>
+    <p style="color:var(--muted);font-size:14px">Accepted at MICCAI 2026 — please update to the proceedings entry once published.</p>
+  </section>
+
+</div>
+
+<footer>
+  <div class="wrap">CAMP, Technical University of Munich &amp; MCML &nbsp;·&nbsp; page maintained by
+    <a href="https://github.com/buldubu">@buldubu</a> and <a href="https://github.com/magdalena-wysocki">@magdalena-wysocki</a></div>
+</footer>
+</body>
+</html>

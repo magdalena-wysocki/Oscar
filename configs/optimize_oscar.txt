@@ -1,0 +1,38 @@
+# OSCAR test-time optimization config (template).
+# Reconstructs the occupancy of a single UNSEEN subject from a trained checkpoint.
+
+expname = oscar_optimize
+basedir = ./logs_test
+
+# The unseen subject to reconstruct.
+datadir = ./data/test_subject
+# Trained checkpoint, or a directory containing best_model.tar +
+# validation_history.json (produced by train.py).
+latent_optimize_ckpt_path = ./checkpoints/oscar_best_model.tar
+# Initialize the test-time latent from the average of the trained latents.
+latent_avg_start = True
+
+# ── Network (must match the trained checkpoint) ──
+output_ch = 4
+latent_dim = 128
+i_embed = -1
+N_samples = 512
+netdepth = 8
+netwidth = 128
+
+# ── Test-time optimization length ──
+# By default the number of steps is taken from best_cal_steps in the checkpoint's
+# validation_history.json. To force a fixed number of steps regardless, pass a
+# NEGATIVE --n_iters on the command line, e.g.  --n_iters -6000  -> exactly 6000.
+n_iters = 6000
+lrate = 3e-5
+gradient_accumulation_steps = 4
+loss = ssim
+
+reg = True
+r_lcc_penalty = 0.01
+r_tv_penalty = 0.00001
+r_warm_up_it = 1
+
+# Occupancy grid resolution for Dice/HD95 (must equal the gt_volume.npy resolution).
+test_metric_grid_res = 128

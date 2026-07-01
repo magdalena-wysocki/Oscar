@@ -1,0 +1,46 @@
+# OSCAR training config (template).
+# Replace the data paths below with your own subject directories.
+
+expname = oscar_train
+basedir = ./logs_train
+
+# Comma-separated list of TRAINING subject directories (one sweep each).
+datadir = ./data/subjectA, ./data/subjectB, ./data/subjectC
+# Held-out VALIDATION subjects: used to pick the best model and the number of
+# test-time optimization steps (best_cal_steps). Omit to disable validation.
+val_datadir = ./data/val_subjectA, ./data/val_subjectB
+
+# ── Network ──
+output_ch = 4          # 3 acoustic (attenuation, reflection, scatter) + 1 occupancy
+latent_dim = 128
+i_embed = -1           # identity positional encoding (OSCAR default)
+N_samples = 512
+netdepth = 8
+netwidth = 128
+
+# ── Optimization ──
+n_iters = 660001       # e.g. 10 epochs of 132 subjects x 500 frames
+lrate = 1e-4
+gradient_accumulation_steps = 4
+loss = ssim
+
+# ── Occupancy / shape completion ──
+completion = True
+occ_lambda = 0.3
+occ_loss_model_only = True   # occupancy loss updates the backbone, not the latents
+
+# ── Physics regularization ──
+reg = True
+r_lcc_penalty = 0.01
+r_tv_penalty = 0.00001
+r_warm_up_it = 5001
+
+# ── Validation ──
+val_max_cal_steps = 10000
+val_cal_eval_every = 500
+early_stop_patience = 3
+
+# ── Logging ──
+tensorboard = True
+i_print = 5000
+i_weights = 20000

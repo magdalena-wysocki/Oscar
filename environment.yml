@@ -1,0 +1,19 @@
+name: oscar
+channels:
+  - conda-forge
+dependencies:
+  - python=3.9
+  - pip
+  - pip:
+      - torch==2.3.1
+      - torchvision==0.18.1
+      - monai==1.4.0
+      - numpy==1.26.4
+      - scipy==1.13.1
+      - opencv-python==4.11.0.86
+      - PyMCubes==0.1.6
+      - trimesh==4.6.9
+      - matplotlib==3.9.4
+      - tqdm==4.67.1
+      - configargparse==1.7
+      - tensorboard==2.19.0

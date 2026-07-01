@@ -1,0 +1,52 @@
+# OSCAR training config for the released dataset (public_repo/data).
+#
+# Split: 132 train / 10 validation / 10 test.
+#   train      = 33 base + 33 rotation-augmented + 66 translated-augmented sweeps
+#                (VerSe subjects 004 005 008 010 014 031 072 073 078 124 139 152)
+#   validation = subjects 046 091 102 134  (3 vertebrae each, not in train or test)
+#   test       = subjects 030 048 065 (3 vertebrae each) + 076_21
+#
+# Before training, run scripts/create_poses_labels.py and scripts/create_gt_volume.py
+# on each folder once: they regenerate poses_labels.npy (and gt_volume.npy) from the
+# shipped poses.npy, so only poses/images/masks are distributed.
+
+expname = oscar
+basedir = ./logs_train
+
+datadir = ./data/sub-verse004_21, ./data/sub-verse004_21_aug2, ./data/sub-verse004_21_aug_translated2, ./data/sub-verse004_21_translated1, ./data/sub-verse004_22, ./data/sub-verse004_22_aug2, ./data/sub-verse004_22_aug_translated2, ./data/sub-verse004_22_translated1, ./data/sub-verse004_23, ./data/sub-verse004_23_aug2, ./data/sub-verse004_23_aug_translated2, ./data/sub-verse004_23_translated1, ./data/sub-verse005_21, ./data/sub-verse005_21_aug2, ./data/sub-verse005_21_aug_translated2, ./data/sub-verse005_21_translated1, ./data/sub-verse005_22, ./data/sub-verse005_22_aug2, ./data/sub-verse005_22_aug_translated2, ./data/sub-verse005_22_translated1, ./data/sub-verse005_23, ./data/sub-verse005_23_aug2, ./data/sub-verse005_23_aug_translated2, ./data/sub-verse005_23_translated1, ./data/sub-verse008_21, ./data/sub-verse008_21_aug2, ./data/sub-verse008_21_aug_translated2, ./data/sub-verse008_21_translated1, ./data/sub-verse008_22, ./data/sub-verse008_22_aug2, ./data/sub-verse008_22_aug_translated2, ./data/sub-verse008_22_translated1, ./data/sub-verse008_23, ./data/sub-verse008_23_aug2, ./data/sub-verse008_23_aug_translated2, ./data/sub-verse008_23_translated1, ./data/sub-verse010_22, ./data/sub-verse010_22_aug2, ./data/sub-verse010_22_aug_translated2, ./data/sub-verse010_22_translated1, ./data/sub-verse010_23, ./data/sub-verse010_23_aug2, ./data/sub-verse010_23_aug_translated2, ./data/sub-verse010_23_translated1, ./data/sub-verse014_21, ./data/sub-verse014_21_aug2, ./data/sub-verse014_21_aug_translated2, ./data/sub-verse014_21_translated1, ./data/sub-verse014_22, ./data/sub-verse014_22_aug2, ./data/sub-verse014_22_aug_translated2, ./data/sub-verse014_22_translated1, ./data/sub-verse014_23, ./data/sub-verse014_23_aug2, ./data/sub-verse014_23_aug_translated2, ./data/sub-verse014_23_translated1, ./data/sub-verse031_21, ./data/sub-verse031_21_aug2, ./data/sub-verse031_21_aug_translated2, ./data/sub-verse031_21_translated1, ./data/sub-verse031_23, ./data/sub-verse031_23_aug2, ./data/sub-verse031_23_aug_translated2, ./data/sub-verse031_23_translated1, ./data/sub-verse072_21, ./data/sub-verse072_21_aug2, ./data/sub-verse072_21_aug_translated2, ./data/sub-verse072_21_translated1, ./data/sub-verse072_22, ./data/sub-verse072_22_aug2, ./data/sub-verse072_22_aug_translated2, ./data/sub-verse072_22_translated1, ./data/sub-verse073_21, ./data/sub-verse073_21_aug2, ./data/sub-verse073_21_aug_translated2, ./data/sub-verse073_21_translated1, ./data/sub-verse073_22, ./data/sub-verse073_22_aug2, ./data/sub-verse073_22_aug_translated2, ./data/sub-verse073_22_translated1, ./data/sub-verse073_23, ./data/sub-verse073_23_aug2, ./data/sub-verse073_23_aug_translated2, ./data/sub-verse073_23_translated1, ./data/sub-verse078_21, ./data/sub-verse078_21_aug2, ./data/sub-verse078_21_aug_translated2, ./data/sub-verse078_21_translated1, ./data/sub-verse078_22, ./data/sub-verse078_22_aug2, ./data/sub-verse078_22_aug_translated2, ./data/sub-verse078_22_translated1, ./data/sub-verse078_23, ./data/sub-verse078_23_aug2, ./data/sub-verse078_23_aug_translated2, ./data/sub-verse078_23_translated1, ./data/sub-verse124_21, ./data/sub-verse124_21_aug2, ./data/sub-verse124_21_aug_translated2, ./data/sub-verse124_21_translated1, ./data/sub-verse124_22, ./data/sub-verse124_22_aug2, ./data/sub-verse124_22_aug_translated2, ./data/sub-verse124_22_translated1, ./data/sub-verse124_23, ./data/sub-verse124_23_aug2, ./data/sub-verse124_23_aug_translated2, ./data/sub-verse124_23_translated1, ./data/sub-verse139_21, ./data/sub-verse139_21_aug2, ./data/sub-verse139_21_aug_translated2, ./data/sub-verse139_21_translated1, ./data/sub-verse139_22, ./data/sub-verse139_22_aug2, ./data/sub-verse139_22_aug_translated2, ./data/sub-verse139_22_translated1, ./data/sub-verse139_23, ./data/sub-verse139_23_aug2, ./data/sub-verse139_23_aug_translated2, ./data/sub-verse139_23_translated1, ./data/sub-verse152_21, ./data/sub-verse152_21_aug2, ./data/sub-verse152_21_aug_translated2, ./data/sub-verse152_21_translated1, ./data/sub-verse152_22, ./data/sub-verse152_22_aug2, ./data/sub-verse152_22_aug_translated2, ./data/sub-verse152_22_translated1, ./data/sub-verse152_23, ./data/sub-verse152_23_aug2, ./data/sub-verse152_23_aug_translated2, ./data/sub-verse152_23_translated1
+val_datadir = ./data/sub-verse046_21_aug3, ./data/sub-verse091_21_aug3, ./data/sub-verse091_22_aug3, ./data/sub-verse091_23_aug3, ./data/sub-verse102_21_aug3, ./data/sub-verse102_22_aug3, ./data/sub-verse102_23_aug3, ./data/sub-verse134_21_aug3, ./data/sub-verse134_22_aug3, ./data/sub-verse134_23_aug3
+
+# -- Network --
+output_ch = 4          # 3 acoustic (attenuation, reflection, scatter) + 1 occupancy
+latent_dim = 128
+i_embed = -1           # identity positional encoding (OSCAR default)
+N_samples = 512
+netdepth = 8
+netwidth = 128
+
+# -- Optimization --
+n_iters = 660001
+lrate = 1e-4
+gradient_accumulation_steps = 4
+loss = ssim
+
+# -- Occupancy / shape completion --
+completion = True
+occ_lambda = 0.3
+occ_loss_model_only = True
+
+# -- Physics regularization --
+reg = True
+r_lcc_penalty = 0.01
+r_tv_penalty = 0.00001
+r_warm_up_it = 5001
+
+# -- Validation --
+val_max_cal_steps = 10000
+val_cal_eval_every = 500
+early_stop_patience = 3
+
+# -- Logging --
+tensorboard = True
+i_print = 5000
+i_weights = 20000

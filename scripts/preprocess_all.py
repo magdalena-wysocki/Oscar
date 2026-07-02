@@ -45,23 +45,30 @@ def main():
                         help="skip folders that already have poses_labels.npy and gt_volume.npy")
     args = parser.parse_args()
 
-    subjects = sorted(
-        name for name in os.listdir(args.data_root)
-        if os.path.isfile(os.path.join(args.data_root, name, "poses.npy"))
-    )
+    def has_input(name):
+        d = os.path.join(args.data_root, name)
+        return os.path.isfile(os.path.join(d, "poses.npy")) or \
+               os.path.isfile(os.path.join(d, "poses_labels.npy"))
+
+    subjects = sorted(name for name in os.listdir(args.data_root)
+                      if os.path.isdir(os.path.join(args.data_root, name)) and has_input(name))
     if not subjects:
-        sys.exit(f"No subject folders with poses.npy found under {args.data_root}")
+        sys.exit(f"No folders with poses.npy or poses_labels.npy found under {args.data_root}")
 
     print(f"Preprocessing {len(subjects)} sweeps under {args.data_root}\n")
     for i, name in enumerate(subjects, 1):
         d = os.path.join(args.data_root, name)
         print(f"[{i}/{len(subjects)}] {name}")
-        have_both = os.path.isfile(os.path.join(d, "poses_labels.npy")) and \
-                    os.path.isfile(os.path.join(d, "gt_volume.npy"))
-        if args.skip_existing and have_both:
+        has_pl = os.path.isfile(os.path.join(d, "poses_labels.npy"))
+        has_gt = os.path.isfile(os.path.join(d, "gt_volume.npy"))
+        if args.skip_existing and has_pl and has_gt:
             print("  skip (derived files already present)")
             continue
-        create_poses_labels(d, args.probe_depth, args.probe_width)
+        if has_pl:
+            # reuse an existing poses_labels.npy; otherwise derive it from poses.npy
+            print("  poses_labels.npy already present -> keeping it")
+        else:
+            create_poses_labels(d, args.probe_depth, args.probe_width)
         create_gt_volume(d, args.grid_res, args.threshold)
         print()
 

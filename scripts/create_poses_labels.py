@@ -43,6 +43,12 @@ def compute_pts_from_pose(H, W, sw, sh, pose, near, far):
 
 
 def create_poses_labels(data_dir, probe_depth=110.0, probe_width=60.0):
+    # Optional per-folder probe geometry: a probe.txt holding "depth width"
+    # overrides the depth/width arguments for that folder.
+    probe_file = os.path.join(data_dir, "probe.txt")
+    if os.path.isfile(probe_file):
+        vals = open(probe_file).read().split()
+        probe_depth, probe_width = float(vals[0]), float(vals[1])
     poses = np.load(os.path.join(data_dir, "poses.npy")).astype(np.float32)
     images = np.load(os.path.join(data_dir, "images.npy"), mmap_mode="r")
     H, W = images[0].shape[:2]
